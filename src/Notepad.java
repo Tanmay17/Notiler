@@ -1,6 +1,4 @@
-import java.awt.AWTEvent;
-import java.awt.AWTEventMulticaster;
-import java.awt.ComponentOrientation;
+
 import java.awt.Event;
 import java.awt.FileDialog;
 import java.awt.Font;
@@ -14,12 +12,10 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
-import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.Calendar;
@@ -30,14 +26,9 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.KeyStroke;
-import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.UndoableEditEvent;
@@ -46,13 +37,13 @@ import javax.swing.text.Document;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
-import sun.awt.image.SurfaceManager;
+
 public class Notepad extends javax.swing.JFrame {
-       
+
     JButton b[];
     String dir;
-    public Notepad()
-    {
+
+    public Notepad() {
         /*setVisible(false);
          {
             try{
@@ -63,7 +54,7 @@ public class Notepad extends javax.swing.JFrame {
             }
             catch(Exception e){}
         }*/
-        
+
         initComponents();
         try {
             BufferedImage img = ImageIO.read(
@@ -1294,19 +1285,19 @@ public class Notepad extends javax.swing.JFrame {
             System.exit(0);
         } else if (flag == 2) {
             openOld();
-        }
-        else if (flag == 3) {
+        } else if (flag == 3) {
             compileFile();
         }
 
     }
-String temp="",output="";
+    String temp = "", output = "";
+
     public void compileFile() {
         String path = dir + "\\" + name;
         jScrollPane5.setVisible(true);
         jPanel4.repaint();
         jPanel4.updateUI();
-        String err="";
+        String err = "";
         if (name.endsWith(".java")) {
             try {
                 String opt[] = {"-g", "-source", "1.8", "-target",
@@ -1319,38 +1310,37 @@ String temp="",output="";
                                 System.getProperty(
                                         "user.home") + "\\err.txt"));
                 String s = "";
-                boolean b=false;
-                while ((s = din.readLine())!=null) {
+                boolean b = false;
+                while ((s = din.readLine()) != null) {
                     jTextArea2.append(s + "\n");
-                    b=true;
+                    b = true;
                 }
                 din.close();
-                if(!b){
+                if (!b) {
+                    jTextArea2.setText("No Syntax Error");
+                }
+            } catch (Exception e) {
+            }
+        } else if (name.endsWith(".c")) {
+            try {
+                System.out.println(dir + " " + name);
+
+                Process p1 = Runtime.getRuntime().exec("gcc " + name, null, new File(dir));
+                DataInputStream din = new DataInputStream(p1.getErrorStream());
+                boolean b = false;
+                String o = null;
+                while ((o = din.readLine()) != null) {
+                    err += o + "\n";
+                    b = true;
+                }
+                din.close();
+                if (!b) {
                     jTextArea2.setText("No Syntax Error");
                 }
             } catch (Exception e) {
             }
         }
-        else if(name.endsWith(".c")){
-            try{
-            System.out.println(dir+" "+name);
-            
-            Process p1=Runtime.getRuntime().exec("gcc "+name,null,new File(dir));
-            DataInputStream din=new DataInputStream(p1.getErrorStream());
-            boolean b=false;
-            String o=null;
-            while((o=din.readLine())!=null)
-            {
-                err+=o+"\n";
-                b=true;
-            }
-            din.close();
-            if(!b){
-                    jTextArea2.setText("No Syntax Error");
-                }
-            }catch(Exception e){}
-        }
- }
+    }
     String name;
 
     public void openOld() {
@@ -1388,7 +1378,7 @@ String temp="",output="";
     }//GEN-LAST:event_jMenuItem20ActionPerformed
 
     private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
-       dispose();
+        dispose();
     }//GEN-LAST:event_jMenuItem7ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
@@ -1409,13 +1399,13 @@ String temp="",output="";
     }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     private void jMenuItem19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem19ActionPerformed
-        int l1,l2;
-        try{
-        l1=jTextArea1.getSelectionStart();
-        l2=jTextArea1.getSelectedText().length();
-        jTextArea1.getDocument().remove(l1, l2);
+        int l1, l2;
+        try {
+            l1 = jTextArea1.getSelectionStart();
+            l2 = jTextArea1.getSelectedText().length();
+            jTextArea1.getDocument().remove(l1, l2);
+        } catch (Exception e) {
         }
-        catch(Exception e){}
     }//GEN-LAST:event_jMenuItem19ActionPerformed
 
     private void jMenuItem13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem13ActionPerformed
@@ -1545,133 +1535,126 @@ String temp="",output="";
     }//GEN-LAST:event_jTextArea1MousePressed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-        String nam=getTitle();
-  try{
-      String txt=jTextArea1.getText();
-        if(nam.equals("Untitled-Notepad"))
-        {
-            FileDialog fd=new FileDialog(Notepad.this, "Save As", FileDialog.SAVE);
-            fd.setVisible(true);
-            String dir=fd.getDirectory();
-            String file=fd.getFile();
-            if (file != null) {
-                  //  if (!file.endsWith(".txt")) {
-                //        file =file + ".txt";
-              //      }
-            
-            String path=dir+file;
-            int len1=txt.length();
-            byte buf[]=txt.getBytes();
-            File f1=new File(path);
-            FileOutputStream obj=new FileOutputStream(f1);
-            for(int i=0;i<len1;i++)
-            {
-                obj.write(buf[i]);
-            }
-            obj.close();
-            this.setTitle(file);
-        }
-        }
-         else{
-            String f2 = dir + "/" + name;
+        String nam = getTitle();
+        try {
+            String txt = jTextArea1.getText();
+            if (nam.equals("Untitled-Notepad")) {
+                FileDialog fd = new FileDialog(Notepad.this, "Save As", FileDialog.SAVE);
+                fd.setVisible(true);
+                dir = fd.getDirectory();
+                String file = fd.getFile();
+                if (file != null) {
+                    //  if (!file.endsWith(".txt")) {
+                    //        file =file + ".txt";
+                    //      }
+
+                    String path = dir + file;
+                    int len1 = txt.length();
+                    byte buf[] = txt.getBytes();
+                    File f1 = new File(path);
+                    FileOutputStream obj = new FileOutputStream(f1);
+                    for (int i = 0; i < len1; i++) {
+                        obj.write(buf[i]);
+                    }
+                    obj.close();
+                    this.setTitle(file);
+                    name = file;
+                }
+            } else {
+                String f2 = dir + "/" + name;
                 FileOutputStream fout = new FileOutputStream(f2);
                 fout.write(txt.getBytes());
                 fout.close();
-             }
-     }
-  catch(Exception e){}
+            }
+        } catch (Exception e) {
+        }
     }//GEN-LAST:event_jMenuItem3ActionPerformed
-   
+
     private void jMenuItem21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem21ActionPerformed
         flag = 3;
         notSaved();
     }//GEN-LAST:event_jMenuItem21ActionPerformed
 
     private void jMenuItem22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem22ActionPerformed
-        if(name.endsWith(".java")){
-        try{
-        jTextArea2.setText("");
-        dir=dir.substring(0,dir.length()-1);
-        String classname=name.substring(0,name.lastIndexOf("."));
-        System.out.println("java -cp \""+dir+"\" "+classname);
-        Process p=Runtime.getRuntime().exec("java -cp \""+dir+"\" "+classname);
-        
-        InputStream in=p.getInputStream();
-        DataInputStream din=new DataInputStream(in);
-        String s="";
-        while((s=din.readLine())!=null)
-        {
-            jTextArea2.append(s+"\n");
-        }
-        din.close();
-        }catch(Exception e)
-        {
-            System.out.println(e);
-        }
-        }
-        else if(name.endsWith(".c")){
-            try{
-            Process p=Runtime.getRuntime().exec(dir+"//a.exe");
-            InputStream in=p.getInputStream();
-            DataInputStream din=new DataInputStream(in);
-            while((temp=din.readLine())!=null){
-                output+=temp;
+        if (name.endsWith(".java")) {
+            try {
+                jTextArea2.setText("");
+                dir = dir.substring(0, dir.length() - 1);
+                String classname = name.substring(0, name.lastIndexOf("."));
+                System.out.println("java -cp \"" + dir + "\" " + classname);
+                Process p = Runtime.getRuntime().exec("java -cp \"" + dir + "\" " + classname);
+
+                InputStream in = p.getInputStream();
+                DataInputStream din = new DataInputStream(in);
+                String s = "";
+                while ((s = din.readLine()) != null) {
+                    jTextArea2.append(s + "\n");
+                }
+                din.close();
+            } catch (Exception e) {
+                System.out.println(e);
+                e.printStackTrace();
             }
-            din.close();
-            }catch(Exception e)
-            {
+        } else if (name.endsWith(".c")) {
+            try {
+                Process p = Runtime.getRuntime().exec(dir + "//a.exe");
+                InputStream in = p.getInputStream();
+                DataInputStream din = new DataInputStream(in);
+                while ((temp = din.readLine()) != null) {
+                    output += temp;
+                }
+                din.close();
+            } catch (Exception e) {
                 System.out.println(e);
             }
         }
     }//GEN-LAST:event_jMenuItem22ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
-         try
-        {
-            FileDialog fd=new FileDialog(Notepad.this, "Save As", FileDialog.SAVE);
+        try {
+            FileDialog fd = new FileDialog(Notepad.this, "Save As", FileDialog.SAVE);
             fd.setVisible(true);
-            String dir=fd.getDirectory();
-            String file=fd.getFile();
+            String dir = fd.getDirectory();
+            String file = fd.getFile();
             if (file != null) {
-                    if (!file.endsWith(".txt")) {
-                        file =file + ".txt";
-                    }
+                if (!file.endsWith(".txt")) {
+                    file = file + ".txt";
+                }
             }
-            String path=dir+file;
-            String txt=jTextArea1.getText();
-            int len1=txt.length();
-            byte buf[]=txt.getBytes();
-            File f1=new File(path);
-            FileOutputStream obj=new FileOutputStream(f1);
-            for(int i=0;i<len1;i++)
-            {
+            String path = dir + file;
+            String txt = jTextArea1.getText();
+            int len1 = txt.length();
+            byte buf[] = txt.getBytes();
+            File f1 = new File(path);
+            FileOutputStream obj = new FileOutputStream(f1);
+            for (int i = 0; i < len1; i++) {
                 obj.write(buf[i]);
             }
             obj.close();
             this.setTitle(file);
+        } catch (Exception e) {
         }
-        catch(Exception e){}
     }//GEN-LAST:event_jMenuItem4ActionPerformed
-int pos;
+    int pos;
     private void jMenuItem16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem16ActionPerformed
-       pos=jTextArea1.getCaretPosition();
-    String months[]={"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
-    GregorianCalendar c=new GregorianCalendar();
-    String date=c.get(Calendar.DATE)+"-"+months[(c.get(Calendar.MONTH))]+"-"+c.get(Calendar.YEAR);
-    Date d=new Date();
-    String time=d.getHours()+":"+d.getMinutes()+" ";
-    String dt=date+" "+time;
-    jTextArea1.insert(dt, pos);
+        pos = jTextArea1.getCaretPosition();
+        String months[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+        GregorianCalendar c = new GregorianCalendar();
+        String date = c.get(Calendar.DATE) + "-" + months[(c.get(Calendar.MONTH))] + "-" + c.get(Calendar.YEAR);
+        Date d = new Date();
+        String time = d.getHours() + ":" + d.getMinutes() + " ";
+        String dt = date + " " + time;
+        jTextArea1.insert(dt, pos);
     }//GEN-LAST:event_jMenuItem16ActionPerformed
 
     private void jMenuItem18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem18ActionPerformed
         jDialog5.setSize(487, 450);
-        jDialog5.setLocation(getX(),getY());
+        jDialog5.setLocation(getX(), getY());
         jDialog5.setVisible(true);
     }//GEN-LAST:event_jMenuItem18ActionPerformed
 
     private void jMenuItem23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem23ActionPerformed
-         flag = 1;
+        flag = 1;
         notSaved();
     }//GEN-LAST:event_jMenuItem23ActionPerformed
 
@@ -1684,14 +1667,14 @@ int pos;
     }//GEN-LAST:event_jMenuItem14ActionPerformed
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
-         PrinterJob pj = PrinterJob.getPrinterJob();
+        PrinterJob pj = PrinterJob.getPrinterJob();
         PageFormat pf = pj.pageDialog(pj.defaultPage());
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jMenuItem8ActionPerformed
-private Document editorPaneDocument;
+    private Document editorPaneDocument;
     protected UndoHandler undoHandler = new UndoHandler();
     protected UndoManager undoManager = new UndoManager();
     private UndoAction undoAction = null;
@@ -1831,7 +1814,7 @@ private Document editorPaneDocument;
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {      
+    public static void main(String args[]) {
         /* Set the Nimbu,s look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -1857,8 +1840,8 @@ private Document editorPaneDocument;
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() { 
-             
+            public void run() {
+
                 new Notepad().setVisible(true);
             }
         });
