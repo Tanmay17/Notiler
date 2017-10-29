@@ -1570,6 +1570,7 @@ String temp="",output="";
             }
             obj.close();
             this.setTitle(file);
+            nam = file;       
         }
         }
          else{
